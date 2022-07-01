@@ -1,0 +1,116 @@
+---
+title: "Code_challenge"
+author: "Ifedayo_ojo"
+date: '2022-07-01'
+output: html_document
+---
+## Question F
+```{r setup, include=FALSE}
+# Load Library 
+library(data.table)
+# Load data to r worksheet
+gene_df=fread("gene_disease_opt.csv")
+# Check the data
+head(gene_df, 4)
+# Logically select the desired data 
+selected=gene_df[score>0.4,.SD, by=.(gene_family)][order(score, gene_family, decreasing = T)]
+# select the first 5 above the cut off for each gene_family.
+new_selected=rbind(selected[gene_family=="OTHER"][1:5],selected[gene_family=="SLC"][1:5],selected[gene_family=="GPCR"][1:5])
+
+#unique(selected$gene_family)
+# View(new_selected)
+# Write to  data to csv
+fwrite(new_selected, file = "~/R_code/Code_challenge/Output/selected_associations.csv")
+
+
+library(dplyr)
+gene_family_summary=selected %>%
+  group_by(gene_family) %>%
+  summarise("No_Association"=n())
+
+View(gene_family_summary)
+library(ggplot2)
+ggplot(data = gene_family_summary, aes(x=gene_family, y="No_Association"))+
+  geom_bar(stat = "identity")
+
+
+
+
+
+```
+
+## 
+
+
+
+
+```{r cars}
+# No of assocation after year 2020
+cat("The number of assocation after 2020 is: ", selected[publicationYear>2020,.N])
+
+
+# Get the assocaition after 2020 with missense variant'
+missense_Var=selected[publicationYear>2020,][grepl("missense_variant",variantFunctionalConsequence.label)]
+
+head(missense_Var,3)
+
+cat("Total number of association with missense variant is : ", nrow(missense_Var))
+```
+
+### Question h
+
+
+```{r pressure, echo=FALSE}
+setwd("~/R_code/Code_challenge/graphics")
+pdf("score_dst.pdf")
+ggplot(selected, aes(x=selected$score), xlab="Score")+
+   geom_density(alpha=.3)+
+  theme_classic()+labs(title = "Distribution Curve for association Score")
+dev.off()
+
+setwd("~/R_code/Code_challenge")
+
+  
+
+```
+###Question I
+
+```{r  }
+# Create a function to return indexed matrix 
+sortVariant=function(data){
+  df=as.data.table(data)
+  df2=df[,.(variantId, score)][order(variantId, decreasing = F)]
+  sort_Variant=as.matrix(df2)
+  return(sort_Variant)
+}
+
+# Try the fundtion with "selected" dataset
+variant_mat=sortVariant(selected)
+head(variant_mat,3)
+
+```
+
+
+```{r }
+library(clusterProfiler)
+
+df_selected= as.data.frame(selected)
+
+selected_List=df_selected[,'score']
+  names(selected_List)=as.character(df_selected[,'target.approvedSymbol'])
+  selected_List=sort(selected_List, decreasing = TRUE)
+  selected_List=selected_List[unique(names(selected_List))]
+  
+  
+dgngse <- gseDGN(selected_List,
+                 pvalueCutoff  = 0.2,
+                 pAdjustMethod = "BH",
+                 verbose       = FALSE)
+dgngse <- setReadable(dgngse, 'org.Hs.eg.db')
+
+emapplot(selected_List, showCategory = 30, colour= "score")
+```
+
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
