@@ -5,6 +5,7 @@ date: '2022-07-01'
 output: html_document
 ---
 ## Question F
+Loading the data into R environment 
 ```{r setup, include=FALSE}
 # Load Library 
 library(data.table)
@@ -33,10 +34,6 @@ library(ggplot2)
 ggplot(data = gene_family_summary, aes(x=gene_family, y="No_Association"))+
   geom_bar(stat = "identity")
 
-
-
-
-
 ```
 
 ## 
@@ -44,7 +41,7 @@ ggplot(data = gene_family_summary, aes(x=gene_family, y="No_Association"))+
 
 
 
-```{r cars}
+```{r question g}
 # No of assocation after year 2020
 cat("The number of assocation after 2020 is: ", selected[publicationYear>2020,.N])
 
@@ -57,10 +54,11 @@ head(missense_Var,3)
 cat("Total number of association with missense variant is : ", nrow(missense_Var))
 ```
 
-### Question h
+### Question H
+## The plot of the distribution of all assocaition 
 
 
-```{r pressure, echo=FALSE}
+```{r }
 setwd("~/R_code/Code_challenge/graphics")
 pdf("score_dst.pdf")
 ggplot(selected, aes(x=selected$score), xlab="Score")+
@@ -74,6 +72,8 @@ setwd("~/R_code/Code_challenge")
 
 ```
 ###Question I
+
+The function task 
 
 ```{r  }
 # Create a function to return indexed matrix 
@@ -90,8 +90,10 @@ head(variant_mat,3)
 
 ```
 
+Network Plot
 
 ```{r }
+library(devtools)
 library(clusterProfiler)
 
 df_selected= as.data.frame(selected)
