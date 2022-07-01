@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-## Question one  
+## Question  1
 cut -f 10,12,8,1 gene_disease_opt.csv | grep -i "Rheumatoid arthritis" | sort -nr > ~/Code_challenge/output/rheumatoid_arthritis.csv
 echo "File Saved Successfully"
 sleep 1
