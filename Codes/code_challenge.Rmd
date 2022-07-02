@@ -35,6 +35,7 @@ View(gene_family_summary)
 ```
 
 ```{r }
+# Generate the plot using ggplot2
 library(ggplot2)
 ggplot(data = selected, aes(fill=gene_family, y=score, x="disease.name"))+
   geom_bar(stat = "identity", position="stack")+
