@@ -103,24 +103,31 @@ head(variant_mat,3)
 Network Plot
 
 ```{r }
-library(devtools)
-library(clusterProfiler)
+library(igraph)
 
-df_selected= as.data.frame(selected)
+y=data.frame(selected$disease.name[1:20],selected$score[1:20])
 
-selected_List=df_selected[,'score']
-  names(selected_List)=as.character(df_selected[,'target.approvedSymbol'])
-  selected_List=sort(selected_List, decreasing = TRUE)
-  selected_List=selected_List[unique(names(selected_List))]
-  
-  
-dgngse <- gseDGN(selected_List,
-                 pvalueCutoff  = 0.2,
-                 pAdjustMethod = "BH",
-                 verbose       = FALSE)
-dgngse <- setReadable(dgngse, 'org.Hs.eg.db')
+geneNet=graph.data.frame(y, directed = FALSE)
 
-emapplot(selected_List, showCategory = 30, colour= "score")
+
+V(geneNet)
+E(geneNet)
+V(geneNet)$Label=V(geneNet)$name
+V(geneNet)$degree=degree(geneNet)
+set.seed(222)
+setwd("~/R_code/Code_challenge/graphics")
+pdf("gene_disease_ntw.pdf")
+plot(geneNet,
+     vertex.color=rainbow(52),
+     edge.colour="red", layout=layout.kamada.kawai,
+     vertex.label.cex=0.8, edge.arrow.size=0.1,
+     vertex.size=V(geneNet)$degree*4)
+title("Gene-disease Association network plot")
+dev.off()
+
+
+
+
 ```
 
 
