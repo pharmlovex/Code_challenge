@@ -30,9 +30,17 @@ gene_family_summary=selected %>%
   summarise("No_Association"=n())
 
 View(gene_family_summary)
+
+
+```
+
+```{r }
 library(ggplot2)
-ggplot(data = gene_family_summary, aes(x=gene_family, y="No_Association"))+
-  geom_bar(stat = "identity")
+ggplot(data = selected, aes(fill=gene_family, y=score, x="disease.name"))+
+  geom_bar(stat = "identity", position="stack")+
+  labs(title = "Stacked bar chart by association per gene")
+  
+
 
 ```
 
@@ -59,6 +67,7 @@ cat("Total number of association with missense variant is : ", nrow(missense_Var
 
 
 ```{r }
+
 setwd("~/R_code/Code_challenge/graphics")
 pdf("score_dst.pdf")
 ggplot(selected, aes(x=selected$score), xlab="Score")+
